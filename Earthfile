@@ -35,6 +35,8 @@ build-php:
 
 deploy:
 	FROM alpine/doctl:1.22.2
+	RUN apk add --update docker openrc
+	RUN rc-update add docker boot
 	# setup kubectl
 	ARG env='dev'
 	ARG DIGITALOCEAN_ACCESS_TOKEN=""
@@ -50,6 +52,8 @@ deploy:
 	RUN kubectl config get-contexts
 
 	RUN doctl registry login
+
+	RUN docker --version
 
 	# ## deploy kubernetes configs
 	# RUN kubectl apply -f environments/${env}/namespace.yaml
