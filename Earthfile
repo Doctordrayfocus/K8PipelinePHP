@@ -21,16 +21,10 @@ build-php:
 	ARG envs='dev,prod'
 	COPY docker docker
 	COPY docker-compose.yml .
-	
-	WITH DOCKER \
-			--compose docker-compose.yml \
-			--load fpm_server:$version=php_docker_engine+fpm-server \
-			--load web_server:$version=php_docker_engine+web-server \
-			--load cron:$version=php_docker_engine+cron 
-        RUN docker build --network=laravel-in-kubernetes fpm_server:$version && \
-			docker build --network=laravel-in-kubernetes web_server:$version && \
-			docker build --network=laravel-in-kubernetes cron:$version 
-    END
+
+	RUN php_docker_engine+fpm-server --push --version=$version --docker_registry=$docker_registry --service=$service 
+	RUN php_docker_engine+web-server --push  --version=$version --docker_registry=$docker_registry --service=$service
+	RUN php_docker_engine+cron --push  --version=$version --docker_registry=$docker_registry --service=$service
 
 	## update deployment.yaml with latest versions
 	COPY ./templates/php/kubernetes kubernetes
