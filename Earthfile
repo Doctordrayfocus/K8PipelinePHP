@@ -22,7 +22,11 @@ push-php:
 	ARG DOCKER_PASSWORD=''
 	RUN apk add --update docker openrc
 	RUN rc-update add docker boot
-	RUN apk add --update docker-compose
+	RUN apk update && \
+    apk add --no-cache docker-cli python3 && \
+    apk add --no-cache --virtual .docker-compose-deps python3-dev libffi-dev openssl-dev gcc libc-dev make && \
+    pip3 install docker-compose && \
+    apk del .docker-compose-deps
 
 	RUN mkdir -p /build-arena
 
@@ -32,23 +36,22 @@ push-php:
 	COPY docker-compose.yml .
 	COPY templates/php/docker docker
 
-	RUN ls
-
 	# build docker images
-	RUN docker-compose build
+	RUN docker-compose --version
+	RUN docker --version
 
-	# authenticate docker
-	RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+	# # authenticate docker
+	# RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
 
-	# tag images
-	RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
-	RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
-	RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
+	# # tag images
+	# RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
+	# RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
+	# RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
 
-	# push images
-	RUN docker push ${docker_registry}/${service}_cron:v${version}
-	RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
-	RUN docker push ${docker_registry}/${service}_web_server:v${version}
+	# # push images
+	# RUN docker push ${docker_registry}/${service}_cron:v${version}
+	# RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
+	# RUN docker push ${docker_registry}/${service}_web_server:v${version}
 
 build-php:
 	ARG version='0.1'
