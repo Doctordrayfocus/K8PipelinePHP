@@ -27,9 +27,7 @@ build-php:
 			--load fpm_server:$version=php_docker_engine+fpm-server \
 			--load web_server:$version=php_docker_engine+web-server \
 			--load cron:$version=php_docker_engine+cron \
-        RUN docker build --network=laravel-in-kubernetes fpm_server:$version && \
-			docker build --network=laravel-in-kubernetes web_server:$version && \
-			docker build --network=laravel-in-kubernetes cron:$version 
+        RUN docker build --network=laravel-in-kubernetes fpm_server:$version 
     END
 
 	## update deployment.yaml with latest versions
