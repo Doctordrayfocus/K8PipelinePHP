@@ -37,12 +37,13 @@ deploy:
 	FROM alpine/doctl:1.22.2
 	# setup kubectl
 	ARG env='dev'
+	ARG DIGITALOCEAN_ACCESS_TOKEN=""
 
 	COPY environments environments
 
 	RUN kubectl version --client
 	# doctl authenticating
-    RUN doctl auth init --access-token dop_v1_9ed9cd09f1bb39179167dab9a9657d64886088de17669bf88cc06586f39d279f
+    RUN doctl auth init --access-token ${DIGITALOCEAN_ACCESS_TOKEN}
 
 	# save Kube config
 	RUN doctl kubernetes cluster kubeconfig save roof-income
