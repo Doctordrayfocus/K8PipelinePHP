@@ -30,13 +30,6 @@ push-php:
     pip3 install docker-compose && \
     apk del .docker-compose-deps
 
-	RUN mkdir -p /build-arena
-
-	RUN chmod 666 /var/run/docker.sock
-
-	# Next, set our working directory
-	WORKDIR /build-arena
-
 	COPY docker-compose.yml .
 	COPY templates/php/docker docker
 
