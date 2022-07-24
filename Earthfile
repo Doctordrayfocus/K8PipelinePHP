@@ -22,17 +22,17 @@ build-php:
 	COPY docker docker
 	COPY docker-compose.yml .
 	
-	WITH DOCKER --compose docker-compose.yml --load fpm_server:$version=php_docker_engine+fpm-server
-        RUN docker build --network=laravel-in-kubernetes fpm_server:$version
-		# RUN docker tag fpm_server:$version ${docker_registry}/${service}_fpm_server:v${version}
-		# RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
-    END
+	# WITH DOCKER --compose docker-compose.yml --load fpm_server:$version=php_docker_engine+fpm-server
+    #     RUN docker build --network=laravel-in-kubernetes fpm_server:$version
+	# 	# RUN docker tag fpm_server:$version ${docker_registry}/${service}_fpm_server:v${version}
+	# 	# RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
+    # END
 
-	WITH DOCKER --compose docker-compose.yml --load web_server:$version=php_docker_engine+web-server
-        RUN docker build --network=laravel-in-kubernetes web_server:$version
-		# RUN docker tag web_server:$version ${docker_registry}/${service}_web_server:v${version}
-		# RUN docker push ${docker_registry}/${service}_web_server:v${version}
-    END
+	# WITH DOCKER --compose docker-compose.yml --load web_server:$version=php_docker_engine+web-server
+    #     RUN docker build --network=laravel-in-kubernetes web_server:$version
+	# 	# RUN docker tag web_server:$version ${docker_registry}/${service}_web_server:v${version}
+	# 	# RUN docker push ${docker_registry}/${service}_web_server:v${version}
+    # END
 
 	WITH DOCKER --compose docker-compose.yml --load cron:$version=php_docker_engine+cron
         RUN docker build --network=laravel-in-kubernetes cron:$version
