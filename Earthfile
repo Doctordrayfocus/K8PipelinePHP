@@ -15,7 +15,7 @@ install-php:
 
 build-php:
 	ARG version='0.1'
-	ARG docker_registry='drayfocus/earthly-sample'
+	ARG docker_registry='drayfocus'
 	ARG service='sample'
 	ARG envs='dev,prod'
 	COPY docker docker
