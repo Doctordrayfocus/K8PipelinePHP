@@ -15,6 +15,9 @@ install-php:
 
 push-php:
 	FROM alpine/doctl:1.22.2
+	ARG version='0.1'
+	ARG docker_registry='drayfocus'
+	ARG service='sample'
 	RUN apk add --update docker openrc
 	RUN rc-update add docker boot
 	RUN docker push php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
