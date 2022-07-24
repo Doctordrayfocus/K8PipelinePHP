@@ -196,7 +196,7 @@ fpm-server:
 	# so our user "owns" the application when running
 	USER  www-data
 
-	SAVE IMAGE --push ${docker_registry}:${version}
+	SAVE IMAGE --push ${docker_registry}/${service}_fpm_server:${version}
 
 
 web-server:
@@ -219,7 +219,7 @@ web-server:
 	# and configuration.
 	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
 
-	SAVE IMAGE --push ${docker_registry}:${version}
+	SAVE IMAGE --push ${docker_registry}/${service}_web_server:${version}
 
 cron:
 	FROM +cli
@@ -238,4 +238,4 @@ cron:
 
 	CMD ["crond", "-l", "2", "-f"]
 
-	SAVE IMAGE --push ${docker_registry}:${version}
+	SAVE IMAGE --push ${docker_registry}/${service}_cron:${version}

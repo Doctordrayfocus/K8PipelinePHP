@@ -25,13 +25,13 @@ build-php:
 	BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
 	BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
 
-	## update deployment.yaml with latest versions
-	COPY ./templates/php/kubernetes kubernetes
-	COPY environments environments
-	COPY version-update.sh .
-	RUN chmod -R 775 .
-	RUN ./version-update.sh $envs $service $docker_registry $version
-	SAVE ARTIFACT environments AS LOCAL environments
+	# ## update deployment.yaml with latest versions
+	# COPY ./templates/php/kubernetes kubernetes
+	# COPY environments environments
+	# COPY version-update.sh .
+	# RUN chmod -R 775 .
+	# RUN ./version-update.sh $envs $service $docker_registry $version
+	# SAVE ARTIFACT environments AS LOCAL environments
 
 deploy:
 	FROM alpine/doctl:1.22.2
