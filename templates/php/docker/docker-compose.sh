@@ -9,6 +9,9 @@ version: "3"
 services:
   # We need to run the FPM container for our application
   laravel.fpm:
+	build:
+      context: ./docker
+      target: fpm_server
     image: ${SERVICE_NAME}/fpm_server
     # We can override any env values here.
     # By default the .env in the project root will be loaded as the environment for all containers
@@ -23,6 +26,9 @@ services:
 
   # Run the web server container for static content, and proxying to our FPM container
   laravel.web:
+	build:
+      context: ./docker
+      target: web_server
     image: ${SERVICE_NAME}/web_server
     # Expose our application port (80) through a port on our local machine (8080)
     ports:
@@ -38,6 +44,9 @@ services:
       - laravel-in-kubernetes
   # Run the Laravel Scheduler
   laravel.cron:
+	build:
+      context: ./docker
+      target: cron
     image: ${SERVICE_NAME}/cron
     # Here we mount in our codebase so any changes are immediately reflected into the container
     volumes:

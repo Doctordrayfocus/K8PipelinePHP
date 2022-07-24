@@ -1,4 +1,4 @@
-VERSION 0.6
+version 0.6
 FROM bash:4.4
 IMPORT ./templates/php AS php_engine
 IMPORT ./templates/php/docker AS php_docker_engine
@@ -18,9 +18,35 @@ push-php:
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
+	ARG DOCKER_USERNAME=''
+	ARG DOCKER_PASSWORD=''
 	RUN apk add --update docker openrc
 	RUN rc-update add docker boot
-	RUN docker push php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
+	RUN apk add --update docker-compose
+
+	RUN mkdir -p /build-arena
+
+	# Next, set our working directory
+	WORKDIR /build-arena
+
+	COPY docker-compose.yml .
+	COPY template/php/docker docker
+
+	# build docker images
+	RUN docker-compose build
+
+	# authenticate docker
+	RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+
+	# tag images
+	RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
+	RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
+	RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
+
+	# push images
+	RUN docker push ${docker_registry}/${service}_cron:v${version}
+	RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
+	RUN docker push ${docker_registry}/${service}_web_server:v${version}
 
 build-php:
 	ARG version='0.1'
