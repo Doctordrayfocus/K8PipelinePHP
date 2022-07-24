@@ -13,7 +13,7 @@ ARG PHP_PECL_EXTS="redis"
 project:
 	# clone project
 	COPY conf conf
-	GIT CLONE https://github.com/Doctordrayfocus/Matrixapp.git laravel
+	GIT CLONE https://github.com/Doctordrayfocus/VueShopifyPHP.git laravel
 	SAVE ARTIFACT conf /conf
 	SAVE ARTIFACT laravel /laravel
 
