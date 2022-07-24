@@ -47,7 +47,8 @@ deploy:
 	# save Kube config
 	RUN doctl kubernetes cluster kubeconfig save roof-income
 	RUN kubectl config get-contexts
-	
+
+	RUN doctl registry login
 
 	# ## deploy kubernetes configs
 	# RUN kubectl apply -f environments/${env}/namespace.yaml
