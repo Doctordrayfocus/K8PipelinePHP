@@ -42,7 +42,7 @@ deploy:
 
 	RUN kubectl version --client
 	# doctl authenticating
-    RUN doctl auth init --access-token dop_v1_39b66f4dfcc7f1b7f433f1b94bb52134f72f6227ed43389fb19d1e9e37a91237
+    RUN doctl auth init --access-token dop_v1_9ed9cd09f1bb39179167dab9a9657d64886088de17669bf88cc06586f39d279f
 
 	# save Kube config
 	RUN doctl kubernetes cluster kubeconfig save roof-income
