@@ -13,6 +13,12 @@ install-php:
 	SAVE ARTIFACT Dockerfile AS LOCAL docker/Dockerfile
 	SAVE ARTIFACT environments AS LOCAL environments
 
+push-php:
+	FROM alpine/doctl:1.22.2
+	RUN apk add --update docker openrc
+	RUN rc-update add docker boot
+	RUN docker push php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
+
 build-php:
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
