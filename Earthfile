@@ -39,21 +39,20 @@ push-php:
 	COPY templates/php/docker docker
 
 	# build docker images
-	RUN docker-compose --version
-	RUN docker --version
+	RUN docker-compose build
 
-	# # authenticate docker
-	# RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
+	# authenticate docker
+	RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
 
-	# # tag images
-	# RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
-	# RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
-	# RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
+	# tag images
+	RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
+	RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
+	RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
 
-	# # push images
-	# RUN docker push ${docker_registry}/${service}_cron:v${version}
-	# RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
-	# RUN docker push ${docker_registry}/${service}_web_server:v${version}
+	# push images
+	RUN docker push ${docker_registry}/${service}_cron:v${version}
+	RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
+	RUN docker push ${docker_registry}/${service}_web_server:v${version}
 
 build-php:
 	ARG version='0.1'
