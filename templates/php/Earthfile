@@ -1,0 +1,28 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+
+setup-docker:
+	ARG service='sample'
+	ARG envs='dev,prod'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG version='0.1'
+	COPY docker/conf conf
+	COPY docker/docker-compose.sh .
+	COPY docker/Dockerfile .
+	COPY setup-environment.sh .
+	COPY kubernetes kubernetes
+
+	# customize and configure docker-compose file
+	# and create docker-compose.yaml file
+	RUN  chmod -R 775 .
+	RUN ./docker-compose.sh $service
+
+	# customize kubernetes configurations
+	RUN  chmod -R 775 ./kubernetes
+	RUN mkdir environments
+	RUN ./setup-environment.sh $envs $service $docker_registry $version
+
+
+

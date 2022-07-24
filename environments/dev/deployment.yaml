@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-fpm
+  namespace: dev-sample
+  labels:
+    tier: backend
+    layer: fpm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: backend
+      layer: fpm
+  template:
+    metadata:
+      labels:
+        tier: backend
+        layer: fpm
+    spec:
+      containers:
+        - name: fpm
+          image: //sample_fpm_server:v0.1
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: sample
+            - secretRef:
+                name: sample
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-webserver
+  namespace: dev-sample
+  labels:
+    tier: backend
+    layer: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: backend
+      layer: webserver
+  template:
+    metadata:
+      labels:
+        tier: backend
+        layer: webserver
+    spec:
+      containers:
+        - name: webserver
+          image: //sample_web_server:v0.1
+          ports:
+            - containerPort: 80
+          env:
+            # Inject the FPM Host as we did with Docker Compose
+            - name: FPM_HOST
+              value: sample-fpm:9000
