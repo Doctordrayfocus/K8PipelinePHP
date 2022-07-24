@@ -30,7 +30,7 @@ push-php:
 	WORKDIR /build-arena
 
 	COPY docker-compose.yml .
-	COPY template/php/docker docker
+	COPY templates/php/docker docker
 
 	# build docker images
 	RUN docker-compose build
