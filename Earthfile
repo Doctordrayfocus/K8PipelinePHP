@@ -32,6 +32,8 @@ push-php:
 
 	RUN mkdir -p /build-arena
 
+	RUN chmod 666 /var/run/docker.sock
+
 	# Next, set our working directory
 	WORKDIR /build-arena
 
