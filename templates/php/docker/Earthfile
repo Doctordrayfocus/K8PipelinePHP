@@ -21,12 +21,10 @@ composer-base:
 	# We need to build the Composer base to reuse packages we've installed
 	FROM composer:2.1
 
-	COPY +project/laravel .
-
-	RUN ls
-
 	# First, create the application directory, and some auxilary directories for scripts and such
 	RUN mkdir -p /opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes/bin
+
+	COPY +project/laravel  /opt/apps/laravel-in-kubernetes
 
 	# Next, set our working directory
 	WORKDIR /opt/apps/laravel-in-kubernetes
@@ -135,7 +133,7 @@ cli:
 	RUN apk add  --no-cache ffmpeg
 
 	# Next we have to copy in our code base from our initial build which we installed in the previous stage
-	COPY +composer-base/opt/apps/laravel-in-kubernetes .
+	COPY +composer-base/opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes
 
 fpm-server:
 	# We need a stage which contains FPM to actually run and process requests to our PHP application.
