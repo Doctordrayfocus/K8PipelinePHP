@@ -21,7 +21,7 @@ build-php:
 	COPY docker docker
 	COPY docker-compose.yml .
 
-	# BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
+	BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
 	# BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
 	# BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
 
