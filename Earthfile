@@ -14,7 +14,6 @@ install-php:
 	SAVE ARTIFACT environments AS LOCAL environments
 
 build-php:
-	FROM earthly/dind:alpine
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
