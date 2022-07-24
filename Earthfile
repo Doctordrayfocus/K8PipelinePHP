@@ -22,9 +22,9 @@ build-php:
 	COPY docker docker
 	COPY docker-compose.yml .
 
-	php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
-	php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
-	php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
+	BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
+	BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
+	BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
 
 	## update deployment.yaml with latest versions
 	COPY ./templates/php/kubernetes kubernetes
