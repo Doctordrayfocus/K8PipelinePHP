@@ -25,7 +25,7 @@ push-php:
 	RUN apk update && \
 	apk add cmd:pip3 && \
     apk add --no-cache docker-cli python3 && \
-	&& pip3 install --upgrade pip && \
+	pip3 install --upgrade pip && \
     apk add --no-cache --virtual .docker-compose-deps python3-dev libffi-dev openssl-dev gcc libc-dev make && \
     pip3 install docker-compose && \
     apk del .docker-compose-deps
