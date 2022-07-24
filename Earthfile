@@ -1,4 +1,4 @@
-version 0.6
+VERSION 0.6
 FROM bash:4.4
 IMPORT ./templates/php AS php_engine
 IMPORT ./templates/php/docker AS php_docker_engine
