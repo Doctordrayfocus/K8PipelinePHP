@@ -14,11 +14,6 @@ setup-docker:
 	COPY setup-environment.sh .
 	COPY kubernetes kubernetes
 
-	# customize and configure docker-compose file
-	# and create docker-compose.yaml file
-	RUN  chmod -R 775 .
-	RUN ./docker-compose.sh $service
-
 	# customize kubernetes configurations
 	RUN  chmod -R 775 ./kubernetes
 	RUN mkdir environments

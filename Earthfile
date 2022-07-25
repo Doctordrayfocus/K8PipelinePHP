@@ -47,13 +47,23 @@ deploy:
 
 	# save Kube config
 	RUN doctl kubernetes cluster kubeconfig save roof-income
-	RUN kubectl config get-contexts
+	RUN kubectl config get-contexts	
 
-	
+	## deploy kubernetes configs
+	RUN kubectl apply -f environments/${env}/namespace.yaml
+	RUN kubectl apply -f environments/${env}
 
-	# ## deploy kubernetes configs
-	# RUN kubectl apply -f environments/${env}/namespace.yaml
-	# RUN kubectl apply -f environments/${env}
+auto-deploy:
+	ARG version='0.1'
+	ARG docker_registry='drayfocus'
+	ARG service='sample'
+	ARG env='dev'
+
+	# build and push docker images
+	BUILD +build-php
+
+	# Deploy to kubernetes
+	BUILD +deploy
 
 	
 
