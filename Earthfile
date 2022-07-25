@@ -20,20 +20,14 @@ push-php:
 	ARG service='sample'
 	ARG DOCKER_USERNAME=''
 	ARG DOCKER_PASSWORD=''
-	RUN apk add --update docker openrc
-	RUN rc-update add docker boot
 	RUN apk update && \
-	apk add cmd:pip3 && \
-    apk add --no-cache docker-cli python3 && \
-	pip3 install --upgrade pip && \
-    apk add --no-cache --virtual .docker-compose-deps python3-dev libffi-dev openssl-dev gcc libc-dev make && \
-    pip3 install docker-compose && \
-    apk del .docker-compose-deps
+	apk add docker docker-compose
+	RUN rc-update add docker default
+	RUN /etc/init.d/docker start
 
 	COPY docker-compose.yml .
 	COPY templates/php/docker docker
-	RUN docker run -v /var/run/docker.sock:/var/run/docker.sock
-
+	
 	# build docker images
 	RUN docker-compose build
 
