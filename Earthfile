@@ -13,36 +13,6 @@ install-php:
 	SAVE ARTIFACT Dockerfile AS LOCAL docker/Dockerfile
 	SAVE ARTIFACT environments AS LOCAL environments
 
-push-php:
-	FROM alpine/doctl:1.22.2
-	ARG version='0.1'
-	ARG docker_registry='drayfocus'
-	ARG service='sample'
-	ARG DOCKER_USERNAME=''
-	ARG DOCKER_PASSWORD=''
-	RUN apk update && \
-	apk add --update docker docker-compose openrc
-	RUN rc-update add docker default
-
-	COPY docker-compose.yml .
-	COPY templates/php/docker docker
-	
-	# build docker images
-	RUN docker-compose build
-
-	# authenticate docker
-	RUN docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD}
-
-	# tag images
-	RUN docker tag ${service}/cron ${docker_registry}/${service}_cron:v${version}
-	RUN docker tag ${service}/fpm_server ${docker_registry}/${service}_fpm_server:v${version}
-	RUN docker tag ${service}/web_server ${docker_registry}/${service}_web_server:v${version}
-
-	# push images
-	RUN docker push ${docker_registry}/${service}_cron:v${version}
-	RUN docker push ${docker_registry}/${service}_fpm_server:v${version}
-	RUN docker push ${docker_registry}/${service}_web_server:v${version}
-
 build-php:
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
@@ -65,8 +35,6 @@ build-php:
 
 deploy:
 	FROM alpine/doctl:1.22.2
-	RUN apk add --update docker openrc
-	RUN rc-update add docker boot
 	# setup kubectl
 	ARG env='dev'
 	ARG DIGITALOCEAN_ACCESS_TOKEN=""
@@ -81,9 +49,7 @@ deploy:
 	RUN doctl kubernetes cluster kubeconfig save roof-income
 	RUN kubectl config get-contexts
 
-	RUN doctl registry login
-
-	RUN docker --version
+	
 
 	# ## deploy kubernetes configs
 	# RUN kubectl apply -f environments/${env}/namespace.yaml
