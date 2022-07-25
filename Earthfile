@@ -21,7 +21,7 @@ push-php:
 	ARG DOCKER_USERNAME=''
 	ARG DOCKER_PASSWORD=''
 	RUN apk update && \
-	apk add docker docker-compose
+	apk add --update docker docker-compose openrc
 	RUN rc-update add docker default
 	RUN /etc/init.d/docker start
 
