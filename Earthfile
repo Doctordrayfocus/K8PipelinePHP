@@ -23,7 +23,6 @@ push-php:
 	RUN apk update && \
 	apk add --update docker docker-compose openrc
 	RUN rc-update add docker default
-	RUN /etc/init.d/docker start
 
 	COPY docker-compose.yml .
 	COPY templates/php/docker docker
