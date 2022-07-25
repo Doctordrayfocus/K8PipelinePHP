@@ -32,7 +32,7 @@ push-php:
 
 	COPY docker-compose.yml .
 	COPY templates/php/docker docker
-	RUN ls -l /var/run/docker.sock
+	RUN docker run -v /var/run/docker.sock:/var/run/docker.sock
 
 	# build docker images
 	RUN docker-compose build
