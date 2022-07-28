@@ -12,7 +12,7 @@ setup-docker:
 	COPY kubernetes kubernetes
 
 	# customize kubernetes configurations
-	RUN  chmod -R 775 ./kubernetes
+	RUN  chmod -R 775 .
 	RUN mkdir environments
 	RUN ./setup-environment.sh $envs $service $docker_registry $version
 
