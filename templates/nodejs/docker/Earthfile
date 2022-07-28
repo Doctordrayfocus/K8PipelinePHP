@@ -36,7 +36,7 @@ node-app:
 
 	ENV NODE_ENV ${node_env}
 
-	IF ["$node_env" == 'development'] 
+	IF [$node_env == "development"] 
 		CMD ["npm", "run", "dev"]
 	ELSE
 		CMD ["npm", "run", "start"]

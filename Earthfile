@@ -10,7 +10,7 @@ install:
 	ARG language='php'
 	ARG folder_name='sample'
 
-	IF ["$language" == 'php']
+	IF [$language == "php"]
 		FROM php_engine+setup-docker 
 	ELSE
 		FROM nodejs_engine+setup-docker
