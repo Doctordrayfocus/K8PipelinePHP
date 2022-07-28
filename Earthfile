@@ -8,20 +8,20 @@ WORKDIR /build-arena
 
 install:
 	ARG language=php
-	ARG folder_name='sample'
+	ARG service='sample'
 	FROM busybox
 	IF ["$language" = "php"]
-		FROM php_engine+setup-docker  --folder_name=$folder_name
+		FROM php_engine+setup-docker  --service=$service
 	ELSE
-		FROM nodejs_engine+setup-docker --folder_name=$folder_name
+		FROM nodejs_engine+setup-docker --service=$service
 	END
 
 	# create project setup folder
-	COPY templates ${folder_name}/templates
-	COPY version-update.sh ./${folder_name}
-	COPY Earthfile ./${folder_name}
+	COPY templates ${service}/templates
+	COPY version-update.sh ./${service}
+	COPY Earthfile ./${service}
 
-	SAVE ARTIFACT $folder_name AS LOCAL ${folder_name}
+	SAVE ARTIFACT $service AS LOCAL ${service}
 
 build:
 	ARG language='php'
