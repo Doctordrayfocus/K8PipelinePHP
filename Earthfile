@@ -9,7 +9,7 @@ WORKDIR /build-arena
 install:
 	ARG language='php'
 	ARG folder_name='sample'
-
+	FROM busybox
 	IF [$language == "php"]
 		FROM php_engine+setup-docker 
 	ELSE
