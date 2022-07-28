@@ -17,15 +17,12 @@ install:
 	END
 
 	# create project setup folder
-	COPY templates ${folder_name}
+	COPY templates ${folder_name}/templates
 	COPY version-update.sh ./${folder_name}
 	COPY Earthfile ./${folder_name}
-	RUN ls
-	SAVE ARTIFACT environments ./${folder_name}
+	SAVE ARTIFACT environments ./${folder_name}/environments
 
-	SAVE ARTIFACT /$folder_name AS LOCAL ${folder_name}
-
-
+	SAVE ARTIFACT $folder_name AS LOCAL ${folder_name}
 
 build:
 	ARG language='php'
