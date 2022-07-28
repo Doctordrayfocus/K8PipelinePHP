@@ -8,13 +8,14 @@ setup-docker:
 	ARG envs='dev,prod'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG version='0.1'
+	ARG folder_name='sample'
 	COPY setup-environment.sh .
 	COPY kubernetes kubernetes
 
 	# customize kubernetes configurations
 	RUN  chmod -R 775 .
-	RUN mkdir environments
-	RUN ./setup-environment.sh $envs $service $docker_registry $version
+	RUN mkdir -p $folder_name/environments
+	RUN ./setup-environment.sh $envs $service $docker_registry $version $folder_name
 
 
 

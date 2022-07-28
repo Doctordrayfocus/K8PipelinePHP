@@ -11,16 +11,15 @@ install:
 	ARG folder_name='sample'
 	FROM busybox
 	IF ["$language" = "php"]
-		FROM php_engine+setup-docker 
+		FROM php_engine+setup-docker  --folder_name=$folder_name
 	ELSE
-		FROM nodejs_engine+setup-docker
+		FROM nodejs_engine+setup-docker --folder_name=$folder_name
 	END
 
 	# create project setup folder
 	COPY templates ${folder_name}/templates
 	COPY version-update.sh ./${folder_name}
 	COPY Earthfile ./${folder_name}
-	SAVE ARTIFACT environments ./${folder_name}/environments
 
 	SAVE ARTIFACT $folder_name AS LOCAL ${folder_name}
 
