@@ -6,7 +6,7 @@ WORKDIR /setup-arena
 project:
 	# clone project
 	GIT CLONE https://github.com/Doctordrayfocus/VueShopifyPHP.git nodejs
-	RUN rm /nodejs/package-lock.json
+	RUN rm nodejs/package-lock.json
 	SAVE ARTIFACT nodejs /nodejs
 
 node-app:
