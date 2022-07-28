@@ -7,10 +7,10 @@ IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG language=php
+	ARG service_lang=php
 	ARG service='sample'
 	FROM busybox
-	IF ["$language" = "php"]
+	IF ["$service_lang" = "php"]
 		FROM php_engine+setup-docker  --service=$service
 	ELSE
 		FROM nodejs_engine+setup-docker --service=$service
@@ -24,14 +24,14 @@ install:
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
 build:
-	ARG language='php'
+	ARG service_lang='php'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="developement"
 
-	IF ["$language" = "php"]
+	IF ["$service_lang" = "php"]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
 		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
