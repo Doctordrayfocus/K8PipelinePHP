@@ -17,10 +17,10 @@ install:
 	END
 
 	# create project setup folder
-	RUN mkdir -p /${folder_name}
+	COPY templates ${folder_name}
 	COPY version-update.sh ./${folder_name}
 	COPY Earthfile ./${folder_name}
-	COPY templates ${folder_name}
+	RUN ls
 	SAVE ARTIFACT environments ./${folder_name}
 
 	SAVE ARTIFACT /$folder_name AS LOCAL ${folder_name}
