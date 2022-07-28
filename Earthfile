@@ -2,28 +2,46 @@ VERSION 0.6
 FROM bash:4.4
 IMPORT ./templates/php AS php_engine
 IMPORT ./templates/php/docker AS php_docker_engine
-IMPORT ./templates/kubectl AS kubectl_engine
+IMPORT ./templates/nodejs AS nodejs_engine
+IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
-install-php:
-	FROM php_engine+setup-docker 
+install:
+	ARG language='php'
+	ARG folder_name='sample'
 
-	SAVE ARTIFACT conf docker/conf AS LOCAL docker/conf
-	SAVE ARTIFACT docker-compose.yml AS LOCAL docker-compose.yml
-	SAVE ARTIFACT Dockerfile AS LOCAL docker/Dockerfile
-	SAVE ARTIFACT environments AS LOCAL environments
+	IF ["$language" == 'php']
+		FROM php_engine+setup-docker 
+	ELSE
+		FROM nodejs_engine+setup-docker
+	END
 
-build-php:
+	# create project setup folder
+	RUN mkdir -p /${folder_name}
+	COPY version-update.sh ./${folder_name}
+	COPY Earthfile ./${folder_name}
+	COPY templates ./${folder_name}
+	SAVE ARTIFACT environments ./${folder_name}
+
+	SAVE ARTIFACT /$folder_name AS LOCAL ${folder_name}
+
+
+
+build:
+	ARG language='php'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
 	ARG envs='dev,prod'
-	COPY docker docker
-	COPY docker-compose.yml .
+	ARG node_env="developement"
 
-	BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
-	BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
-	BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
+	IF ["$language" == 'php'] 
+		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
+		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
+	ELSE
+		BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
+	END
 
 	## update deployment.yaml with latest versions
 	COPY ./templates/php/kubernetes kubernetes
@@ -32,6 +50,7 @@ build-php:
 	RUN chmod -R 775 .
 	RUN ./version-update.sh $envs $service $docker_registry $version
 	SAVE ARTIFACT environments AS LOCAL environments
+
 
 deploy:
 	FROM alpine/doctl:1.22.2
@@ -60,7 +79,7 @@ auto-deploy:
 	ARG env='dev'
 
 	# build and push docker images
-	BUILD +build-php
+	BUILD +build
 
 	# Deploy to kubernetes
 	BUILD +deploy

@@ -8,7 +8,6 @@ setup-docker:
 	ARG envs='dev,prod'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG version='0.1'
-	COPY docker/conf conf
 	COPY setup-environment.sh .
 	COPY kubernetes kubernetes
 
