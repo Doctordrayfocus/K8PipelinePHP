@@ -10,7 +10,7 @@ install:
 	ARG service_lang=php
 	ARG service='sample'
 	FROM busybox
-	IF ["$service_lang" = "php"]
+	IF [ "$service_lang" = "php" ]
 		FROM php_engine+setup-docker  --service=$service
 	ELSE
 		FROM nodejs_engine+setup-docker --service=$service
@@ -31,7 +31,7 @@ build:
 	ARG envs='dev,prod'
 	ARG node_env="developement"
 
-	IF ["$service_lang" = "php"]
+	IF [ "$service_lang" = "php" ]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
 		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
