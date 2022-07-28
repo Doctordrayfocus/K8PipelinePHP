@@ -7,7 +7,7 @@ IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG language='php'
+	ARG language=php
 	ARG folder_name='sample'
 	FROM busybox
 	IF ["$language" = "php"]
@@ -20,7 +20,7 @@ install:
 	RUN mkdir -p /${folder_name}
 	COPY version-update.sh ./${folder_name}
 	COPY Earthfile ./${folder_name}
-	COPY templates ./${folder_name}
+	COPY templates ${folder_name}
 	SAVE ARTIFACT environments ./${folder_name}
 
 	SAVE ARTIFACT /$folder_name AS LOCAL ${folder_name}
