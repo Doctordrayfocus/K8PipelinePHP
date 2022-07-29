@@ -9,11 +9,12 @@ WORKDIR /build-arena
 install:
 	ARG service_lang=php
 	ARG service='sample'
+	ARG envs='dev,prod'
 	FROM busybox
 	IF [ "$service_lang" = "php" ]
-		FROM php_engine+setup-docker  --service=$service
+		FROM php_engine+setup-templates  --service=$service --envs=$envs
 	ELSE
-		FROM nodejs_engine+setup-docker --service=$service
+		FROM nodejs_engine+setup-templates --service=$service --envs=$envs
 	END
 
 	# create project setup folder

@@ -10,6 +10,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ${SERVICE_NAME}-service
+  namespace: $ENV-$SERVICE_NAME
 spec:
   selector:
     app: ${SERVICE_NAME}

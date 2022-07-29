@@ -3,7 +3,7 @@ FROM bash:4.4
 WORKDIR /setup-arena
 
 
-setup-docker:
+setup-templates:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG docker_registry='drayfocus/earthly-sample'

@@ -13,6 +13,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ${SERVICE_NAME}-deployment
+  namespace: ${ENV}-${SERVICE_NAME}
   labels:
     app: ${SERVICE_NAME}
 spec:
