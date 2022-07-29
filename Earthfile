@@ -7,7 +7,7 @@ IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG service_lang=php
+	ARG service_lang=nodejs
 	ARG service='sample'
 	ARG envs='dev,prod'
 	FROM busybox
@@ -25,7 +25,7 @@ install:
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
 build:
-	ARG service_lang='php'
+	ARG service_lang=nodejs
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
