@@ -19,7 +19,7 @@ node-app:
 	ARG node_env='development'
 
 	# ensure you are using the latest nodejs and npm
-	RUN apk add --update nodejs npm
+	RUN npm install npm@latest -g
 
 	# First, create the application directory
 	RUN mkdir -p /app
