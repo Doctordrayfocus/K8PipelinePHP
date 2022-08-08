@@ -11,7 +11,7 @@ project:
 
 node-app:
 	# We need node js to install and run the app
-	FROM node:current-alpine3.15
+	FROM node:18-alpine
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
