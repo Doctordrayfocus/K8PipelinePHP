@@ -5,13 +5,13 @@ WORKDIR /setup-arena
 
 project:
 	# clone project
-	GIT CLONE https://github.com/Doctordrayfocus/VueShopifyPHP.git nodejs
+	GIT CLONE https://github.com/Doctordrayfocus/ArgoCDApp nodejs
 	RUN rm nodejs/package-lock.json
 	SAVE ARTIFACT nodejs /nodejs
 
 node-app:
 	# We need node js to install and run the app
-	FROM node:14.14.0-alpine3.12
+	FROM node:current-alpine3.15
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
