@@ -5,21 +5,18 @@ WORKDIR /setup-arena
 
 project:
 	# clone project
-	GIT CLONE https://github.com/Doctordrayfocus/ArgoCDApp nodejs
+	GIT CLONE https://github.com/Doctordrayfocus/vue-typescript-template.git nodejs
 	RUN rm nodejs/package-lock.json
 	SAVE ARTIFACT nodejs /nodejs
 
 node-app:
 	# We need node js to install and run the app
-	FROM node:18-alpine
+	FROM node:14.14.0-alpine3.12
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
 	ARG node_env='development'
-
-	# ensure you are using the latest nodejs and npm
-	RUN npm install npm@latest -g
 
 	# First, create the application directory
 	RUN mkdir -p /app
@@ -43,7 +40,7 @@ node-app:
 	IF [ "$node_env" = "development" ] 
 		CMD ["npm", "run", "dev"]
 	ELSE
-		CMD ["npm", "run", "start"]
+		CMD ["npm", "run", "build"]
 	END
 
 	SAVE IMAGE --push ${docker_registry}/${service}_node_app:${version}
