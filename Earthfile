@@ -7,15 +7,9 @@ IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG service_lang=nodejs
 	ARG service='sample'
 	ARG envs='dev,prod'
-	FROM busybox
-	IF [ "$service_lang" = "php" ]
-		FROM php_engine+setup-templates  --service=$service --envs=$envs
-	ELSE
-		FROM nodejs_engine+setup-templates --service=$service --envs=$envs
-	END
+	FROM nodejs_engine+setup-templates --service=$service --envs=$envs
 
 	# create project setup folder
 	COPY templates ${service}/templates
@@ -32,13 +26,7 @@ build:
 	ARG envs='dev,prod'
 	ARG node_env="developement"
 
-	IF [ "$service_lang" = "php" ]
-		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
-		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
-		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
-	ELSE
-		BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
-	END
+	BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
 
 	## update deployment.yaml with latest versions
 	COPY ./templates/php/kubernetes kubernetes

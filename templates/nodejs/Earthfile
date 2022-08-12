@@ -16,3 +16,21 @@ setup-templates:
 	RUN mkdir -p $service/environments
 	RUN ./setup-environment.sh $envs $service $docker_registry $version 
 
+setup-environment:
+	
+
+
+namespace:
+	ARG service
+	ARG env
+    ARG dir
+	ARG file="$dir/environments/$env/namespace.yaml"
+
+	ARG OUTPUT="
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $env-$service
+"
+	RUN echo "$OUTPUT" > "$file"
+
