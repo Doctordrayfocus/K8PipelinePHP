@@ -1,52 +1,41 @@
 VERSION 0.6
 FROM bash:4.4
-IMPORT ./templates/php AS php_engine
-IMPORT ./templates/php/docker AS php_docker_engine
 IMPORT ./templates/nodejs AS nodejs_engine
 IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG service_lang=nodejs
 	ARG service='sample'
 	ARG envs='dev,prod'
-	FROM busybox
-	IF [ "$service_lang" = "php" ]
-		FROM php_engine+setup-templates  --service=$service --envs=$envs
-	ELSE
-		FROM nodejs_engine+setup-templates --service=$service --envs=$envs
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample' 
+
+	WORKDIR /setup-arena
+	
+	FOR --sep="," env IN "$envs"	
+		ENV dir="./$service/environments/$env"
+		RUN echo "Creating environment $env"
+		RUN mkdir -p $dir
+		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
+		DO nodejs_engine+SERVICE --service=$service --env=$env --dir=$dir
+		DO nodejs_engine+NAMESPACE --service=$service --env=$env --dir=$dir
 	END
-
-	# create project setup folder
-	COPY templates ${service}/templates
-	COPY version-update.sh ./${service}
-	COPY Earthfile ./${service}
-
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
 build:
-	ARG service_lang=nodejs
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="developement"
 
-	IF [ "$service_lang" = "php" ]
-		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
-		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
-		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service
-	ELSE
-		BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
-	END
+	BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
 
-	## update deployment.yaml with latest versions
-	COPY ./templates/php/kubernetes kubernetes
-	COPY environments environments
-	COPY version-update.sh .
-	RUN chmod -R 775 .
-	RUN ./version-update.sh $envs $service $docker_registry $version
-	SAVE ARTIFACT environments AS LOCAL environments
+	## Update deployment.yaml with latest versions
+	FOR --sep="," env IN "$envs"	
+		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
+		SAVE ARTIFACT $service/environments/$env/* AS LOCAL ${service}/environments/$env/
+	END
 
 
 deploy:
@@ -75,7 +64,7 @@ auto-deploy:
 	ARG service='sample'
 	ARG env='dev'
 
-	# build and push docker images
+	# Build and push docker images
 	BUILD +build
 
 	# Deploy to kubernetes
