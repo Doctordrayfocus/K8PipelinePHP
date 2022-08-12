@@ -1,20 +1,5 @@
 VERSION 0.6
-FROM bash:4.4
-WORKDIR /setup-arena
 
-setup-templates:
-	ARG service='sample'
-    ARG env='prod'
-    ARG dir="./$service/environments/$env"
-    ARG file="$dir/deployment.yaml"
-	ARG version='0.1'
-	ARG docker_registry='drayfocus/earthly-sample' 
-
-	RUN mkdir -p $dir
-	DO +DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
-	DO +SERVICE --service=$service --env=$env --dir=$dir
-	DO +NAMESPACE --service=$service --env=$env --dir=$dir
-    
 DEPLOYMENT:
 	COMMAND
     ARG service='sample'

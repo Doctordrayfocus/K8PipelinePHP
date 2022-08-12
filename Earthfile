@@ -7,12 +7,22 @@ WORKDIR /build-arena
 install:
 	ARG service='sample'
 	ARG envs='dev,prod'
-	FROM nodejs_engine+setup-templates --service=$service --envs=$envs
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample' 
 
+	WORKDIR /setup-arena
+	
+	FOR --sep="," env IN "$envs"	
+		ENV dir="./$service/environments/$env"
+		RUN echo "Creating environment $env"
+		RUN mkdir -p $dir
+		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
+		DO nodejs_engine+SERVICE --service=$service --env=$env --dir=$dir
+		DO nodejs_engine+NAMESPACE --service=$service --env=$env --dir=$dir
+	END
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
 build:
-	ARG service_lang=nodejs
 	ARG version='0.1'
 	ARG docker_registry='drayfocus'
 	ARG service='sample'
@@ -22,11 +32,10 @@ build:
 	BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
 
 	## Update deployment.yaml with latest versions
-	## ToDo: Remove this when envs is handled
-	ARG env='dev'
-	DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
-
-	SAVE ARTIFACT $service/* AS LOCAL ${service} 
+	FOR --sep="," env IN "$envs"	
+		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
+		SAVE ARTIFACT $service/environments/$env/* AS LOCAL ${service}/environments/$env/
+	END
 
 
 deploy:
