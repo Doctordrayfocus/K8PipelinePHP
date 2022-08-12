@@ -1,6 +1,6 @@
 VERSION 0.6
 FROM bash:4.4
-IMPORT ./templates/nodejs AS nodejs_engine
+IMPORT ./templates/nodejs/kubernetes AS nodejs_kubernetes_engine
 IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
 
@@ -16,9 +16,9 @@ install:
 		ENV dir="./$service/environments/$env"
 		RUN echo "Creating environment $env"
 		RUN mkdir -p $dir
-		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
-		DO nodejs_engine+SERVICE --service=$service --env=$env --dir=$dir
-		DO nodejs_engine+NAMESPACE --service=$service --env=$env --dir=$dir
+		DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
+		DO nodejs_kubernetes_engine+SERVICE --service=$service --env=$env --dir=$dir
+		DO nodejs_kubernetes_engine+NAMESPACE --service=$service --env=$env --dir=$dir
 	END
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
@@ -33,7 +33,7 @@ build:
 
 	## Update deployment.yaml with latest versions
 	FOR --sep="," env IN "$envs"	
-		DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
+		DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
 		SAVE ARTIFACT $service/environments/$env/* AS LOCAL ${service}/environments/$env/
 	END
 
