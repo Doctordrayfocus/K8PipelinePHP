@@ -1,7 +1,5 @@
 VERSION 0.6
 FROM bash:4.4
-IMPORT ./templates/php AS php_engine
-IMPORT ./templates/php/docker AS php_docker_engine
 IMPORT ./templates/nodejs AS nodejs_engine
 IMPORT ./templates/nodejs/docker AS nodejs_docker_engine
 WORKDIR /build-arena
@@ -10,11 +8,6 @@ install:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	FROM nodejs_engine+setup-templates --service=$service --envs=$envs
-
-	# create project setup folder
-	COPY templates ${service}/templates
-	COPY version-update.sh ./${service}
-	COPY Earthfile ./${service}
 
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
@@ -28,13 +21,12 @@ build:
 
 	BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
 
-	## update deployment.yaml with latest versions
-	COPY ./templates/php/kubernetes kubernetes
-	COPY environments environments
-	COPY version-update.sh .
-	RUN chmod -R 775 .
-	RUN ./version-update.sh $envs $service $docker_registry $version
-	SAVE ARTIFACT environments AS LOCAL environments
+	## Update deployment.yaml with latest versions
+	## ToDo: Remove this when envs is handled
+	ARG env='dev'
+	DO nodejs_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
+
+	SAVE ARTIFACT $service/* AS LOCAL ${service} 
 
 
 deploy:
@@ -63,7 +55,7 @@ auto-deploy:
 	ARG service='sample'
 	ARG env='dev'
 
-	# build and push docker images
+	# Build and push docker images
 	BUILD +build
 
 	# Deploy to kubernetes
