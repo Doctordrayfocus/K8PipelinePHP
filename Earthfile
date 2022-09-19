@@ -20,14 +20,14 @@ install:
 		ENV dir="./$service/environments/$env"
 		RUN echo "Creating environment $env"
 		
-		IF ["$apptype" = "nodejs"]
+		IF ["$apptype" == "nodejs"]
 			RUN mkdir -p $dir
 			DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
 			DO nodejs_kubernetes_engine+SERVICE --service=$service --env=$env --dir=$dir
 			DO nodejs_kubernetes_engine+NAMESPACE --service=$service --env=$env --dir=$dir
 		END
 
-		IF ["$apptype" = "php"]
+		IF ["$apptype" == "php"]
 			RUN mkdir -p $dir $dir/extras-$service
 			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --dir=$dir --version=$version 
 			DO php_kubernetes_engine+CONFIGMAP --service=$service --env=$env --dir=$dir
@@ -35,7 +35,6 @@ install:
 		END
 
 	END
-	
 
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
