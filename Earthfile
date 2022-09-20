@@ -15,9 +15,10 @@ install:
 
 	WORKDIR /setup-arena
 	
-	RUN mkdir $service
+	RUN mkdir $service $service/app
 
-	COPY . $service
+	COPY templates $service/templates
+	COPY Earthfile $service
 
 	FOR --sep="," env IN "$envs"	
 		ENV dir="./$service/environments/$env"
