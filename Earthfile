@@ -33,9 +33,9 @@ install:
 
 		IF [ "$apptype" = "php" ]
 			RUN mkdir -p $dir $dir/extras-$service
-			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --dir=$dir --version=$version 
-			DO php_kubernetes_engine+CONFIGMAP --service=$service --env=$env --dir=$dir
-			DO php_kubernetes_engine+SECRETS --service=$service --env=$env --dir=$dir
+			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --version=$version 
+			DO php_kubernetes_engine+CONFIGMAP --service=$service --env=$env 
+			DO php_kubernetes_engine+SECRETS --service=$service --env=$env 
 		END
 
 	END
