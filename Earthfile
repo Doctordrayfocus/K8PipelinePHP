@@ -20,14 +20,14 @@ install:
 		ENV dir="./$service/environments/$env"
 		RUN echo "Creating environment $env"
 		
-		IF [$apptype = "nodejs"]
+		IF [ "$apptype" = "nodejs" ]
 			RUN mkdir -p $dir
 			DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --dir=$dir --version=$version --docker_registry=$docker_registry
 			DO nodejs_kubernetes_engine+SERVICE --service=$service --env=$env --dir=$dir
 			DO nodejs_kubernetes_engine+NAMESPACE --service=$service --env=$env --dir=$dir
 		END
 
-		IF [$apptype = "php"]
+		IF [ "$apptype" = "php" ]
 			RUN mkdir -p $dir $dir/extras-$service
 			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --dir=$dir --version=$version 
 			DO php_kubernetes_engine+CONFIGMAP --service=$service --env=$env --dir=$dir
@@ -46,10 +46,10 @@ build:
 	ARG node_env="developement"
 	ARG apptype='nodejs'
 
-	IF ["$apptype" = "nodejs"]
+	IF [ "$apptype" = "nodejs" ]
 		BUILD nodejs_docker_engine+node-app --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
 	END
-	IF ["$apptype" = "php"]
+	IF [ "$apptype" = "php" ]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service 
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
 		BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service 
@@ -57,11 +57,11 @@ build:
 	
 	## Update deployment.yaml with latest versions
 	FOR --sep="," env IN "$envs"	
-		IF ["$apptype" = "nodejs"]
+		IF [ "$apptype" = "nodejs" ]
 			DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
 		END
 
-		IF ["$apptype" = "php"]
+		IF [ "$apptype" = "php" ]
 			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --version=$version 
 		END
 		
@@ -87,12 +87,12 @@ deploy:
 	RUN kubectl config get-contexts	
 
 	## deploy kubernetes configs
-	IF ["$apptype" = "nodejs"]
+	IF [ "$apptype" = "nodejs" ]
 		RUN kubectl apply -f environments/${env}/namespace.yaml
 		RUN kubectl apply -f environments/${env}
 	END
 
-	IF ["$apptype" = "php"]
+	IF [ "$apptype" = "php" ]
 		RUN kubectl apply -f environments/${env}/app-template.yaml
 		RUN kubectl cp environments/${env}/extras-$service $(kubectl get pod -l app=apptemplate-controller -o jsonpath="{.items[0].metadata.name}"):/usr/src/app/configs/extras
 	END
