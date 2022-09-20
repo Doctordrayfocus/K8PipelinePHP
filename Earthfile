@@ -15,7 +15,10 @@ install:
 
 	WORKDIR /setup-arena
 	
-	
+	RUN mkdir $service
+
+	COPY . $service
+
 	FOR --sep="," env IN "$envs"	
 		ENV dir="./$service/environments/$env"
 		RUN echo "Creating environment $env"
