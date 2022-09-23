@@ -63,13 +63,13 @@ build:
 	FOR --sep="," env IN "$envs"	
 		IF [ "$apptype" = "nodejs" ]
 			DO nodejs_kubernetes_engine+DEPLOYMENT --service=$service --env=$env --version=$version --docker_registry=$docker_registry
+			SAVE ARTIFACT $service/environments/$env/deployment.yaml AS LOCAL ${service}/environments/$env/deployment.yaml 
 		END
 
 		IF [ "$apptype" = "php" ]
-			DO php_kubernetes_engine+LARAVELAPP --service=$service --env=$env --version=$version 
+			DO php_kubernetes_engine+LARAVELAPP --service=$service --version=$version 
+			SAVE ARTIFACT $service/environments/$env/app-template.yaml AS LOCAL ${service}/environments/$env/app-template.yaml
 		END
-		
-		SAVE ARTIFACT $service/environments/$env/* AS LOCAL ${service}/environments/$env/
 	END
 
 
@@ -98,7 +98,7 @@ deploy:
 
 	IF [ "$apptype" = "php" ]
 		RUN kubectl apply -f environments/${env}/app-template.yaml
-		RUN kubectl cp environments/${env}/extras-$service $(kubectl get pod -l app=apptemplate-controller -o jsonpath="{.items[0].metadata.name}"):/usr/src/app/configs/extras
+		RUN kubectl cp environments/${env}/extras-$service $(kubectl get pod -l app=apptemplate-controller -o jsonpath="{.items[0].metadata.name}"):/usr/src/app/configs
 	END
 	
 

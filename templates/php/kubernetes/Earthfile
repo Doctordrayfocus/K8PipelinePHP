@@ -7,8 +7,8 @@ LARAVELAPP:
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
 	ARG version='0.1'
-	ARG OUTPUT="apiVersion: roof.ceedcap.io/v1
-kind: RoofAppTemplate
+	ARG OUTPUT="apiVersion: myapp.subdomain.com/v1
+kind: AppTemplate
 metadata:
   name: ${service}
 spec:

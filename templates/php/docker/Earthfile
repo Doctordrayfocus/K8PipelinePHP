@@ -41,7 +41,7 @@ composer-base:
 	# We want to leave the rest of the code base out for now,
 	# so Docker can build a cache of this layer,
 	# and only rebuild when the dependencies of our application changes.
-	COPY --chown=composer ../../../app/composer.json ./
+	COPY --chown=composer ./app/composer.json ./
 
 	# Install all the dependencies without running any installation scripts.
 	# We skip scripts as the code base hasn't been copied in yet and script will likely fail,
@@ -53,13 +53,13 @@ composer-base:
 	# Copy in our actual source code so we can run the installation scripts we need
 	# At this point all the PHP packages have been installed,
 	# and all that is left to do, is to run any installation scripts which depends on the code base
-	COPY --chown=composer ../../../app/ .
+	COPY --chown=composer ./app/ .
 
 	# Now that the code base and packages are all available,
 	# we can run the install again, and let it run any install scripts.
 	RUN composer install --no-dev --prefer-dist
 
-	SAVE ARTIFACT composer-base /opt/apps/laravel-in-kubernetes
+	SAVE ARTIFACT  /opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes
 
 
 frontend:
@@ -80,7 +80,7 @@ frontend:
 	# and compile the MIX bundle for production
 	RUN npm install && npm run prod
 
-	SAVE ARTIFACT frontend /opt/apps/laravel-in-kubernetes
+	SAVE ARTIFACT  /opt/apps/laravel-in-kubernetes  /opt/apps/laravel-in-kubernetes
 
 
 cli:
@@ -107,7 +107,7 @@ cli:
 	COPY +composer-base/opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes
 	COPY +frontend/opt/apps/laravel-in-kubernetes/public /opt/apps/laravel-in-kubernetes/public
 
-	SAVE ARTIFACT cli /opt/apps/laravel-in-kubernetes
+	SAVE ARTIFACT  /opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes
 
 
 fpm-server:
