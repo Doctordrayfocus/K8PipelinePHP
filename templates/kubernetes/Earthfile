@@ -6,18 +6,18 @@ LARAVELAPP:
     ARG env='prod'
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
-	ARG version='0.1'
-	ARG OUTPUT="apiVersion: myapp.subdomain.com/v1
-kind: AppTemplate
+	ARG version=0.1
+	ARG httpsDomain1=''
+	ARG OUTPUT="apiVersion: template.k8spipeline.io/v1
+kind: K8sAppTemplate
 metadata:
   name: ${service}
 spec:
-  serviceName: ${service}
-  environment: ${env}
+  serviceName: '${service}'
+  environment: '${env}'
   deploymentReplicas: 1
-  imageVersion: ${version}
-  configsToUse: ""
-  httpsDomain1: ""
+  imageVersion: '${version}'
+  configsToUse: '${configToUse}'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
@@ -26,8 +26,8 @@ CONFIGMAP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
-    ARG dir="./$service/environments/$env/extras-$service"
-    ARG file="$dir/configmap.yaml"
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/configmap.yaml"
 	ARG OUTPUT="apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -38,15 +38,15 @@ data:
   APP_ENV: 'production'
   APP_DEBUG: 'false'
 "
-	RUN mkdir -p $dir
+	RUN mkdir -p $dirExtra
     RUN echo "$OUTPUT" > "$file"
 
 SECRETS:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
-    ARG dir="./$service/environments/$env/extras-$service"
-    ARG file="$dir/secrets.yaml"
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -58,5 +58,5 @@ stringData:
   DB_USERNAME: 
   DB_PASSWORD: ''
 "
-	RUN mkdir -p $dir
+	RUN mkdir -p $dirExtra
     RUN echo "$OUTPUT" > "$file"
