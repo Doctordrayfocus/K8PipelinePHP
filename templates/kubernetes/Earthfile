@@ -34,7 +34,7 @@ metadata:
   name: ${service}
   namespace: ${env}-${service}
 data:
-  APP_NAME: 'SquareRoof'
+  APP_NAME: 'AppName'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
 "
