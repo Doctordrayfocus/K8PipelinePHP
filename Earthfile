@@ -113,14 +113,19 @@ deploy:
 auto-deploy:
 	ARG version='0.1'
 	ARG docker_registry='docker.io'
-	ARG DIGITALOCEAN_ACCESS_TOKEN=""
 	ARG service='sample'
 	ARG env='dev'
 	ARG apptype='php'
+	ARG DIGITALOCEAN_ACCESS_TOKEN=""
+	ARG authToken=''
+	ARG repoGitUrl=''
+
+	# Setup build
+	DO +setup --envs=$env --authToken=$authToken --repoGitUrl=$repoGitUrl
 
 	# Build and push docker images
-	BUILD +build
+	BUILD +build 
 
 	# Deploy to kubernetes
-	BUILD +deploy
+	DO +deploy --envs=$env --DIGITALOCEAN_ACCESS_TOKEN=$DIGITALOCEAN_ACCESS_TOKEN --apptype=$apptype --service=$service --version=$version
 
