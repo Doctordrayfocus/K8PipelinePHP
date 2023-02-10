@@ -5,10 +5,10 @@ IMPORT ./templates/docker AS php_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG service='project'
+	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG version='0.1'
-	ARG docker_registry='registry.digitalocean.com/ceedcap'
+	ARG docker_registry='docker.io'
 	ARG apptype='php'
 
 	WORKDIR /setup-arena
@@ -31,10 +31,35 @@ install:
 
 	SAVE ARTIFACT $service AS LOCAL ${service}
 
+setup:
+	FROM alpine:3.5
+
+	ARG envs='dev'
+	ARG authToken=''
+	ARG repoGitUrl=''
+
+	RUN mkdir app
+
+	WORKDIR app
+
+	RUN apk update
+
+	RUN apk add git
+
+	## Using this is not a good decision, I will change it once I can find a better way to do this.
+
+	RUN git -c "http.extraHeader=Authorization: Bearer ${authToken}" clone ${repoGitUrl} .
+
+	RUN git checkout ${envs}
+
+	RUN rm -rf package-lock.json composer.lock
+
+	SAVE ARTIFACT * AS LOCAL templates/docker/app/
+
 build:
 	ARG version='0.1'
-	ARG docker_registry='registry.digitalocean.com/ceedcap'
-	ARG service='project'
+	ARG docker_registry='docker.io'
+	ARG service='sample'
 	ARG envs='dev'
 	ARG apptype='php'
 
@@ -47,14 +72,13 @@ build:
 	BUILD php_docker_engine+cron --version=$version --docker_registry=$docker_registry --service=$service 
 	
 	
-
 deploy:
 	FROM alpine/doctl:1.22.2
 	# setup kubectl
 	ARG envs='dev'
 	ARG DIGITALOCEAN_ACCESS_TOKEN=""
 	ARG apptype='php'
-	ARG service='project'
+	ARG service='sample'
 	ARG version=""
 
 	COPY ./environments ${service}/environments
@@ -88,7 +112,7 @@ deploy:
 	
 auto-deploy:
 	ARG version='0.1'
-	ARG docker_registry='${DockerRegistry}'
+	ARG docker_registry='docker.io'
 	ARG DIGITALOCEAN_ACCESS_TOKEN=""
 	ARG service='sample'
 	ARG env='dev'
