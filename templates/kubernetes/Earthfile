@@ -4,21 +4,10 @@ LARAVELAPP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
+    ARG template=''
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
-	ARG version=0.1
-	ARG httpsDomain1=''
-	ARG OUTPUT="apiVersion: template.k8spipeline.io/v1
-kind: K8sAppTemplate
-metadata:
-  name: ${service}
-spec:
-  serviceName: '${service}'
-  environment: '${env}'
-  deploymentReplicas: 1
-  imageVersion: '${version}'
-  configsToUse: '${configToUse}'
-"
+	ARG OUTPUT="$template"
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
 

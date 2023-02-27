@@ -75,17 +75,16 @@ build:
 deploy:
 	FROM alpine/doctl:1.22.2
 	# setup kubectl
-	ARG envs='dev'
+	ARG service=""
+	ARG envs=""
 	ARG DIGITALOCEAN_ACCESS_TOKEN=""
-	ARG apptype='php'
-	ARG service='sample'
-	ARG version=""
+	ARG template=''
 
 	COPY ./environments ${service}/environments
 
 	## Update apptemplate.yaml with latest versions
 
-	DO php_kubernetes_engine+LARAVELAPP --service=$service --version=$version --env=$envs
+	DO php_kubernetes_engine+LARAVELAPP --template=$template --service=$service --envs=$envs
 
 
 	RUN kubectl version --client
