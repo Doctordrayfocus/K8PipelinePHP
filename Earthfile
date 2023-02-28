@@ -34,7 +34,7 @@ install:
 setup:
 	FROM alpine:3.5
 
-	ARG envs='dev'
+	ARG env='dev'
 	ARG authToken=''
 	ARG repoGitUrl=''
 
@@ -50,7 +50,7 @@ setup:
 
 	RUN git -c "http.extraHeader=Authorization: Bearer ${authToken}" clone ${repoGitUrl} .
 
-	RUN git checkout ${envs}
+	RUN git checkout ${env}
 
 	RUN rm -rf package-lock.json composer.lock
 
