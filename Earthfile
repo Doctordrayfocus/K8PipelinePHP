@@ -36,7 +36,7 @@ install:
 
 	RUN zip -r  ${service}.zip ${service}
 
-	RUN curl -F 'data=@${service}.zip' ${upload_url}
+	RUN curl -F "data=@/$service.zip" ${upload_url}
 
 setup:
 	FROM alpine:3.5
