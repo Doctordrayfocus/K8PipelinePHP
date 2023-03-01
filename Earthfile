@@ -10,6 +10,7 @@ install:
 	ARG version='0.1'
 	ARG docker_registry='docker.io'
 	ARG apptype='php'
+	ARG upload_url="http://localhost:8080/save-service-setup"
 
 	WORKDIR /setup-arena
 	
@@ -29,7 +30,9 @@ install:
 
 	END
 
-	SAVE ARTIFACT $service AS LOCAL ${service}
+	RUN zip -r  ${service}.zip ${service}
+
+	RUN curl -F 'data=@${service}.zip' ${upload_url}
 
 setup:
 	FROM alpine:3.5
