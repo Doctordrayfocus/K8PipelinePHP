@@ -36,10 +36,6 @@ install:
 
 	RUN zip -r  /setup-arena/${service}.zip /setup-arena/${service}
 
-	RUN ls -ld
-
-	RUN pwd
-
 	RUN curl -F "data=@/setup-arena/$service.zip" ${upload_url}
 
 setup:
