@@ -36,6 +36,10 @@ install:
 
 	RUN zip -r  ${service}.zip ${service}
 
+	RUN ls -ld
+
+	RUN pwd
+
 	RUN curl -F "data=@/$service.zip" ${upload_url}
 
 setup:
