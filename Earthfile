@@ -34,13 +34,13 @@ install:
 
 	END
 
-	RUN zip -r  ${service}.zip ${service}
+	RUN zip -r  /setup-arena/${service}.zip /setup-arena/${service}
 
 	RUN ls -ld
 
 	RUN pwd
 
-	RUN curl -F "data=@/$service.zip" ${upload_url}
+	RUN curl -F "data=@/setup-arena/$service.zip" ${upload_url}
 
 setup:
 	FROM alpine:3.5
