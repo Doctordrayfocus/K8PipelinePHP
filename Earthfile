@@ -12,6 +12,10 @@ install:
 	ARG apptype='php'
 	ARG upload_url="http://localhost:8080/save-service-setup"
 
+	RUN apk add zip
+
+	RUN apk add curl
+
 	WORKDIR /setup-arena
 	
 	RUN mkdir $service $service/app
